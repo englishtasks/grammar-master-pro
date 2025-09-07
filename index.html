@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grammar Master Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6C5CE7;
+            --secondary: #00B894;
+            --accent: #FF7675;
+            --dark: #2d3436;
+            --light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .admin-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .admin-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab {
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            background: white;
+            border: 2px solid var(--primary);
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .theory-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--secondary);
+        }
+
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .task-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        .task-card.correct {
+            border-left: 4px solid #00B894;
+            background: #f0fff4;
+        }
+
+        .task-card.wrong {
+            border-left: 4px solid #FF7675;
+            background: #fff5f5;
+        }
+
+        .task-number {
+            font-size: 14px;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .task-question {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .task-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .task-input:disabled {
+            background: #f8f9fa;
+        }
+
+        .check-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            float: right;
+            transition: 0.3s;
+        }
+
+        .check-btn:disabled {
+            background: #ddd;
+            cursor: not-allowed;
+        }
+
+        .user-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            .user-panel {
+                position: static;
+                margin-bottom: 20px;
+                width: fit-content;
+            }
+        }
+
+        .name-input {
+            padding: 8px 12px;
+            border: 2px solid var(--primary);
+            border-radius: 6px;
+            width: 150px;
+            margin-right: 10px;
+        }
+
+        .score-display {
+            margin-top: 10px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .score-value {
+            color: var(--primary);
+            font-size: 1.2em;
+        }
+
+        /* Стили для таблицы лидеров */
+        .leaderboard {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .leaderboard h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .leaderboard-table th, 
+        .leaderboard-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .leaderboard-table th {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .leaderboard-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .leaderboard-table tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .leaderboard-table td:first-child {
+            font-weight: 600;
+        }
+
+        .leaderboard-table td:nth-child(2) {
+            text-align: right;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .refresh-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            display: block;
+            margin-left: auto;
+            transition: 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background: #5649c5;
+        }
+
+        .leaderboard-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .leaderboard-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: #f8f9fa;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .leaderboard-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .time-info {
+            text-align: center;
+            margin-top: 10px;
+            font-style: italic;
+            color: #6c757d;
+        }
+
+        /* Стили для модального окна админа */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 900px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            /* ключ: чтобы админ панель была удобна на ноуте/не перекрывалась, добавим макс высоту и прокрутку */
+            max-height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        .admin-panel {
+            margin-top: 20px;
+        }
+
+        .admin-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .admin-section h4 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        .delete-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .answer-list {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .answer-item {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .admin-input {
+            padding: 8px 12px;
+            border: 2px solid var(--primary);
+            border-radius: 6px;
+            width: 200px;
+            margin-right: 10px;
+        }
+
+        .correct-answer {
+            background-color: #f0fff4;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #00B894;
+        }
+
+        /* Доп. стили для новых элементов */
+        .compact {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        textarea.admin-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .small-input {
+            width: 120px;
+            padding: 6px 8px;
+        }
+
+        .stat-item {
+            display: inline-block;
+            margin-right: 15px;
+            font-weight: 600;
+        }
+
+        .user-search-result {
+            margin-top: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-graduation-cap"></i> Grammar Master Pro</h1>
+            <p>Ағылшын грамматикасын үйрену платформасы</p>
+            <button class="admin-btn" id="adminButton">
+                <i class="fas fa-lock"></i> Админ
+            </button>
+        </div>
+
+        <div class="user-panel">
+            <input type="text" class="name-input" id="userName" placeholder="Атыңыз">
+            <button class="check-btn" onclick="saveName()">Сақтау</button>
+            <div class="score-display">Ұпай: <span class="score-value" id="totalScore">0</span></div>
+        </div>
+
+        <div class="tabs" id="tabsContainer"></div>
+        <div id="content"></div>
+    </div>
+
+    <!-- Модальное окно админа -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><i class="fas fa-lock"></i> Админ панелі</h2>
+            
+            <div id="adminLogin">
+                <h3>Кіру</h3>
+                <input type="password" id="adminPassword" class="admin-input" placeholder="Пароль">
+                <button class="check-btn" onclick="loginAdmin()">Кіру</button>
+            </div>
+            
+            <div id="adminPanel" class="admin-panel" style="display: none;">
+                <div class="admin-section">
+                    <h4><i class="fas fa-crown"></i> Лидерлерді басқару</h4>
+                    <div id="adminLeaderboard"></div>
+                </div>
+                
+                <div class="admin-section">
+                    <h4><i class="fas fa-chart-line"></i> Статистика</h4>
+                    <div id="adminStats" class="compact">
+                        <div class="stat-item">Пайдаланушылар: <span id="statUsers">0</span></div>
+                        <div class="stat-item">Жоғарғы ұпай: <span id="statTopScore">0</span></div>
+                        <div class="stat-item">Орташа ұпай: <span id="statAvgScore">0</span></div>
+                        <button class="refresh-btn" onclick="refreshStats()">Жаңарту статистиканы</button>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h4><i class="fas fa-search"></i> Іздеу және өңдеу ойыншы</h4>
+                    <div class="compact">
+                        <input type="text" id="searchUserInput" class="admin-input" placeholder="Аты бойынша іздеу">
+                        <button class="check-btn" onclick="findUser()">Іздеу</button>
+                        <button class="delete-btn" onclick="openImportModal()">Импорт/Экспорт</button>
+                    </div>
+                    <div id="searchResult"></div>
+                </div>
+                
+                <div class="admin-section">
+                    <h4><i class="fas fa-key"></i> Дұрыс жауаптар (көру)</h4>
+                    <select id="tenseSelect" class="admin-input" onchange="showAnswers()">
+                        <option value="">Тақырыпты таңдаңыз</option>
+                    </select>
+                    <div id="correctAnswers" class="answer-list"></div>
+                </div>
+
+                <div class="admin-section">
+                    <h4><i class="fas fa-download"></i> Экспорт лидеров (CSV)</h4>
+                    <div class="compact">
+                        <button class="refresh-btn" onclick="exportLeaderboardCSV()">Экспортировать CSV</button>
+                        <button class="check-btn" onclick="downloadAllData()">Скачать все данные (.json)</button>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h4><i class="fas fa-file-import"></i> Импорт лидеров (JSON)</h4>
+                    <p>Вставьте JSON массива лидеров (пример: [{ "name":"A", "score":100 }])</p>
+                    <textarea id="importTextarea" class="admin-textarea" placeholder='[{"name":"A","score":100}]'></textarea>
+                    <div class="compact">
+                        <button class="check-btn" onclick="importLeaderboardJSON()">Импортировать</button>
+                        <button class="delete-btn" onclick="clearLeaderboard()">Очистить Лидерборд</button>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h4><i class="fas fa-database"></i> Деректерді басқару</h4>
+                    <div class="compact">
+                        <button class="delete-btn" onclick="clearAllData()">Барлық деректерді өшіру</button>
+                        <button class="check-btn" onclick="loadAdminLeaderboard()">Жаңарту лидерлер</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+<script>
+const grammarData = {
+    presentSimple: {
+        title: "Present Simple",
+        videoId: "E73T17dkqYg",
+        theory: `<h3><i class="fas fa-lightbulb"></i> Present Simple</h3>
+            <p><strong>Ережелері:</strong></p>
+            <ol>
+                <li>Әдеттегі іс-әрекеттер (I work every day)</li>
+                <li>Жалпы ақиқаттар (Water boils at 100°C)</li>
+                <li>Пәндер мен кәсіптер (She teaches English)</li>
+            </ol>
+            <p><strong>Формула:</strong></p>
+            <ul>
+                <li>I/We/You/They + Verb (work)</li>
+                <li>He/She/It + Verb + s (works)</li>
+            </ul>`,
+        tasks: [
+            {q: "She ______ (read) books every day.", a: "reads"},
+            {q: "We ______ (play) chess every Friday.", a: "play"},
+            {q: "The sun ______ (rise) in the east.", a: "rises"},
+            {q: "Cats ______ (hate) water.", a: "hate"},
+            {q: "He ______ (work) at a hospital.", a: "works"},
+            {q: "I ______ (drink) coffee every morning.", a: "drink"},
+            {q: "Birds ______ (fly) south in winter.", a: "fly"},
+            {q: "They ______ (live) in Almaty.", a: "live"},
+            {q: "Water ______ (boil) at 100°C.", a: "boils"},
+            {q: "She ______ (teach) mathematics.", a: "teaches"},
+            {q: "______ (need) more time.", a: "need"},
+            {q: "Dogs ______ (bark) at strangers.", a: "bark"},
+            {q: "He ______ (watch) TV every evening.", a: "watches"},
+            {q: "I ______ (speak) three languages.", a: "speak"},
+            {q: "The train ______ (arrive) at 8 PM.", a: "arrives"},
+            {q: "My parents ______ (visit) us every month.", a: "visit"},
+            {q: "She ______ (study) English at university.", a: "studies"},
+            {q: "The Earth ______ (revolve) around the Sun.", a: "revolves"},
+            {q: "He ______ (drive) to work every day.", a: "drives"},
+            {q: "They ______ (like) watching movies.", a: "like"},
+            {q: "I ______ (clean) my room every weekend.", a: "clean"},
+            {q: "She ______ (wash) her hair every day.", a: "washes"},
+            {q: "We ______ (enjoy) playing football.", a: "enjoy"},
+            {q: "He ______ (know) the answer.", a: "knows"},
+            {q: "The store ______ (open) at 9 AM.", a: "opens"},
+            {q: "I ______ (understand) the lesson.", a: "understand"},
+            {q: "She ______ (cook) dinner every evening.", a: "cooks"},
+            {q: "They ______ (travel) abroad every year.", a: "travel"},
+            {q: "He ______ (play) the guitar very well.", a: "plays"},
+            {q: "The bus ______ (stop) at this corner.", a: "stops"}
+        ]
+    },
+    presentContinuous: {
+        title: "Present Continuous",
+        videoId: "WGUQwFLZVn0",
+        theory: `<h3><i class="fas fa-lightbulb"></i> Present Continuous</h3>
+            <p><strong>Ережелері:</strong></p>
+            <ol>
+                <li>Қазір болып жатқан іс-әрекеттер (I am reading now)</li>
+                <li>Уақытша жағдайлар (She is staying at a hotel)</li>
+                <li>Жуық болашақ (We are leaving tomorrow)</li>
+            </ol>
+            <p><strong>Формула:</strong> am/is/are + Verb + ing</p>`,
+        tasks: [
+            {q: "They ______ (play) football now.", a: "are playing"},
+            {q: "I ______ (read) a book right now.", a: "am reading"},
+            {q: "She ______ (cook) dinner at the moment.", a: "is cooking"},
+            {q: "We ______ (watch) a movie now.", a: "are watching"},
+            {q: "He ______ (work) on his project currently.", a: "is working"},
+            {q: "The children ______ (sleep) upstairs.", a: "are sleeping"},
+            {q: "You ______ (learn) English now.", a: "are learning"},
+            {q: "It ______ (rain) outside.", a: "is raining"},
+            {q: "They ______ (build) a new house.", a: "are building"},
+            {q: "I ______ (write) an email now.", a: "am writing"},
+            {q: "She ______ (study) for exams this week.", a: "is studying"},
+            {q: "We ______ (plan) our vacation.", a: "are planning"},
+            {q: "He ______ (drive) to work right now.", a: "is driving"},
+            {q: "The dog ______ (bark) loudly.", a: "is barking"},
+            {q: "You ______ (improve) your skills.", a: "are improving"},
+            {q: "I ______ (listen) to music at the moment.", a: "am listening"},
+            {q: "She ______ (wait) for her friend.", a: "is waiting"},
+            {q: "They ______ (have) lunch in the cafeteria.", a: "are having"},
+            {q: "He ______ (fix) his bicycle.", a: "is fixing"},
+            {q: "We ______ (sit) in the park.", a: "are sitting"},
+            {q: "The students ______ (take) an exam.", a: "are taking"},
+            {q: "I ______ (think) about my future.", a: "am thinking"},
+            {q: "She ______ (wear) a beautiful dress today.", a: "is wearing"},
+            {q: "They ______ (discuss) the new project.", a: "are discussing"},
+            {q: "He ______ (run) in the marathon this year.", a: "is running"},
+            {q: "We ______ (stay) at a hotel this week.", a: "are staying"},
+            {q: "I ______ (learn) to play the piano.", a: "am learning"},
+            {q: "She ______ (teach) a class right now.", a: "is teaching"},
+            {q: "They ______ (celebrate) their anniversary.", a: "are celebrating"},
+            {q: "He ______ (look) for a new apartment.", a: "is looking"}
+        ]
+    },
+    pastSimple: {
+        title: "Past Simple",
+        videoId: "hRDyposu57s",
+        theory: `<h3><i class="fas fa-lightbulb"></i> Past Simple</h3>
+            <p><strong>Ережелері:</strong></p>
+            <ol>
+                <li>Өткенде аяқталған іс-әрекеттер (I worked yesterday)</li>
+                <li>Өткен оқиғалар (She visited Paris in 2010)</li>
+                <li>Өткен кезеңдегі әдеттер (We played football as kids)</li>
+            </ol>
+            <p><strong>Формула:</strong></p>
+            <ul>
+                <li>Тұрақты етістіктер: Verb + ed (worked)</li>
+                <li>Тұрақсыз етістіктер: 2-ші форма (went, ate)</li>
+            </ul>`,
+        tasks: [
+            {q: "I ______ (go) to school yesterday.", a: "went"},
+            {q: "She ______ (buy) a new dress last week.", a: "bought"},
+            {q: "We ______ (watch) that movie yesterday.", a: "watched"},
+            {q: "They ______ (play) football last Sunday.", a: "played"},
+            {q: "He ______ (finish) his work an hour ago.", a: "finished"},
+            {q: "I ______ (eat) sushi for lunch.", a: "ate"},
+            {q: "She ______ (write) a letter yesterday.", a: "wrote"},
+            {q: "We ______ (see) that film last month.", a: "saw"},
+            {q: "They ______ (drink) all the juice.", a: "drank"},
+            {q: "He ______ (take) a shower this morning.", a: "took"},
+            {q: "I ______ (read) that book last year.", a: "read"},
+            {q: "We ______ (have) a meeting yesterday.", a: "had"},
+            {q: "She ______ (make) breakfast yesterday.", a: "made"},
+            {q: "They ______ (leave) the party early.", a: "left"},
+            {q: "He ______ (break) his phone last night.", a: "broke"},
+            {q: "I ______ (visit) my grandparents last weekend.", a: "visited"},
+            {q: "She ______ (start) her new job last Monday.", a: "started"},
+            {q: "We ______ (travel) to Europe last summer.", a: "traveled"},
+            {q: "They ______ (build) this house in 1990.", a: "built"},
+            {q: "He ______ (find) his keys under the bed.", a: "found"},
+            {q: "I ______ (meet) her at the conference.", a: "met"},
+            {q: "She ______ (lose) her wallet yesterday.", a: "lost"},
+            {q: "We ______ (win) the competition last year.", a: "won"},
+            {q: "They ______ (sell) their car last month.", a: "sold"},
+            {q: "He ______ (send) the email an hour ago.", a: "sent"},
+            {q: "I ______ (choose) the blue shirt.", a: "chose"},
+            {q: "She ______ (forget) to call me.", a: "forgot"},
+            {q: "We ______ (hear) the news yesterday.", a: "heard"},
+            {q: "They ______ (bring) snacks to the party.", a: "brought"},
+            {q: "He ______ (think) about it carefully.", a: "thought"}
+        ]
+    },
+    pastPerfect: {
+        title: "Past Perfect",
+        videoId: "GWRLQqlKt20",
+        theory: `<h3><i class="fas fa-lightbulb"></i> Past Perfect</h3>
+            <p><strong>Ережелері:</strong></p>
+            <ol>
+                <li>Өткенде бір іс-әрекет екіншісінен бұрын аяқталған (I had eaten before she came)</li>
+                <li>Өткен оқиғалардың ретін көрсету (When we arrived, the train had left)</li>
+            </ol>
+            <p><strong>Формула:</strong> had + Past Participle</p>`,
+        tasks: [
+            {q: "She ______ (finish) work before he came.", a: "had finished"},
+            {q: "I ______ (already/leave) when you called.", a: "had already left"},
+            {q: "They ______ (eat) before the meeting started.", a: "had eaten"},
+            {q: "We ______ (not/see) that film before yesterday.", a: "had not seen"},
+            {q: "He ______ (just/go) home when I arrived.", a: "had just gone"},
+            {q: "By the time you woke up, I ______ (make) breakfast.", a: "had made"},
+            {q: "She ______ (never/visit) London before last year.", a: "had never visited"},
+            {q: "They ______ (complete) the project before deadline.", a: "had completed"},
+            {q: "I ______ (not/be) there before that day.", a: "had not been"},
+            {q: "The train ______ (already/leave) when we arrived.", a: "had already left"},
+            {q: "He ______ (forget) his keys before leaving home.", a: "had forgotten"},
+            {q: "We ______ (just/finish) dinner when guests arrived.", a: "had just finished"},
+            {q: "She ______ (read) the book before watching the movie.", a: "had read"},
+            {q: "They ______ (not/meet) before the conference.", a: "had not met"},
+            {q: "By 2020, I ______ (live) here for 10 years.", a: "had lived"},
+            {q: "She ______ (already/see) that movie twice.", a: "had already seen"},
+            {q: "They ______ (decide) before we suggested it.", a: "had decided"},
+            {q: "He ______ (not/try) sushi before coming to Japan.", a: "had not tried"},
+            {q: "We ______ (prepare) everything before they arrived.", a: "had prepared"},
+            {q: "I ______ (never/experience) such kindness before.", a: "had never experienced"},
+            {q: "She ______ (study) English before moving to London.", a: "had studied"},
+            {q: "They ______ (book) the tickets before the price increased.", a: "had booked"},
+            {q: "He ______ (work) there for five years before retiring.", a: "had worked"},
+            {q: "We ______ (not/visit) that museum before last week.", a: "had not visited"},
+            {q: "I ______ (already/hear) the news when you told me.", a: "had already heard"},
+            {q: "She ______ (complete) the course before getting the job.", a: "had completed"},
+            {q: "They ______ (build) the house before the winter came.", a: "had built"},
+            {q: "He ______ (never/play) tennis before taking lessons.", a: "had never played"},
+            {q: "We ______ (finish) the project before the deadline.", a: "had finished"},
+            {q: "I ______ (not/eat) so much before that dinner.", a: "had not eaten"}
+        ]
+    },
+    presentPerfect: {
+        title: "Present Perfect",
+        videoId: "2zl7dObUuQU",
+        theory: `<h3><i class="fas fa-lightbulb"></i> Present Perfect</h3>
+            <p><strong>Ережелері:</strong></p>
+            <ol>
+                <li>Өткенде басталған және әлі жалғасып жатқан іс-әрекеттер (I have lived here for 5 years)</li>
+                <li>Тәжірибелерді сипаттау (She has visited 10 countries)</li>
+            </ol>
+            <p><strong>Формула:</strong> have/has + Past Participle</p>`,
+        tasks: [
+            {q: "I ______ (finish) my homework.", a: "have finished"},
+            {q: "She ______ (visit) Paris three times.", a: "has visited"},
+            {q: "We ______ (live) here since 2010.", a: "have lived"},
+            {q: "They ______ (not/arrive) yet.", a: "have not arrived"},
+            {q: "______ you ever ______ (be) to London?", a: "Have been"},
+            {q: "He ______ (work) here for 10 years.", a: "has worked"},
+            {q: "I ______ (never/see) such a beautiful sunset.", a: "have never seen"},
+            {q: "She ______ (just/leave) the office.", a: "has just left"},
+            {q: "We ______ (already/eat) dinner.", a: "have already eaten"},
+            {q: "______ they ______ (finish) the project?", a: "Have finished"},
+            {q: "He ______ (not/do) his chores yet.", a: "has not done"},
+            {q: "I ______ (read) that book several times.", a: "have read"},
+            {q: "She ______ (travel) to 20 countries.", a: "has traveled"},
+            {q: "We ______ (know) each other since childhood.", a: "have known"},
+            {q: "They ______ (not/decide) what to do yet.", a: "have not decided"},
+            {q: "I ______ (just/buy) a new car.", a: "have just bought"},
+            {q: "She ______ (never/try) Indian food.", a: "has never tried"},
+            {q: "We ______ (recently/move) to a new apartment.", a: "have recently moved"},
+            {q: "He ______ (already/see) that movie.", a: "has already seen"},
+            {q: "______ you ______ (finish) your report yet?", a: "Have finished"},
+            {q: "I ______ (not/visit) the new museum yet.", a: "have not visited"},
+            {q: "She ______ (work) here since 2015.", a: "has worked"},
+            {q: "They ______ (just/announce) the results.", a: "have just announced"},
+            {q: "He ______ (never/be) to Asia.", a: "has never been"},
+            {q: "We ______ (already/discuss) this issue.", a: "have already discussed"},
+            {q: "I ______ (recently/start) learning French.", a: "have recently started"},
+            {q: "She ______ (not/complete) the assignment yet.", a: "has not completed"},
+            {q: "They ______ (live) in this city for ten years.", a: "have lived"},
+            {q: "He ______ (just/return) from his trip.", a: "has just returned"},
+            {q: "______ you ever ______ (eat) sushi?", a: "Have eaten"}
+        ]
+    },
+    forSince: {
+        title: "For/Since",
+        videoId: "QKCAQjFlN7A",
+        theory: `<h3><i class="fas fa-lightbulb"></i> For және Since</h3>
+            <p><strong>Ережелері:</strong></p>
+            <ol>
+                <li><strong>For</strong> - уақыт ұзақтығын көрсету үшін (for 2 hours, for 3 days)</li>
+                <li><strong>Since</strong> - белгілі бір уақыттан бері (since Monday, since 2010)</li>
+                <li>Present Perfect және Past Perfect шақтарымен қолданылады</li>
+            </ol>
+            <p><strong>Мысалдар:</strong></p>
+            <ul>
+                <li>I have lived here <strong>for</strong> 5 years</li>
+                <li>She has been working <strong>since</strong> morning</li>
+                <li>We had known each other <strong>for</strong> a long time</li>
+            </ul>`,
+        tasks: [
+            {q: "I have lived here ______ 2015.", a: "since"},
+            {q: "She has been studying ______ three hours.", a: "for"},
+            {q: "We have known each other ______ childhood.", a: "since"},
+            {q: "They have been married ______ 10 years.", a: "for"},
+            {q: "He has worked here ______ last summer.", a: "since"},
+            {q: "It hasn't rained ______ weeks.", a: "for"},
+            {q: "I haven't seen her ______ Monday.", a: "since"},
+            {q: "We have been waiting ______ 2 o'clock.", a: "since"},
+            {q: "She has had this car ______ a long time.", a: "for"},
+            {q: "They have been friends ______ they were children.", a: "since"},
+            {q: "I have been learning English ______ five years.", a: "for"},
+            {q: "He hasn't called ______ last week.", a: "since"},
+            {q: "We have had this dog ______ 2020.", a: "since"},
+            {q: "She has been sleeping ______ hours.", a: "for"},
+            {q: "They have been building the house ______ March.", a: "since"},
+            {q: "I've known her ______ we were at university.", a: "since"},
+            {q: "They've been traveling ______ several months.", a: "for"},
+            {q: "He's been sick ______ last Tuesday.", a: "since"},
+            {q: "We've been waiting ______ what feels like forever.", a: "for"},
+            {q: "She's lived abroad ______ 2018.", a: "since"},
+            {q: "I've had this phone ______ a year.", a: "for"},
+            {q: "They've been dating ______ high school.", a: "since"},
+            {q: "He's been working ______ he graduated.", a: "since"},
+            {q: "We've been friends ______ over twenty years.", a: "for"},
+            {q: "She's been awake ______ 5 AM.", a: "since"},
+            {q: "I've been trying to reach you ______ hours.", a: "for"},
+            {q: "They've been living here ______ quite some time.", a: "for"},
+            {q: "He's been interested in art ______ childhood.", a: "since"},
+            {q: "We've been planning this ______ months.", a: "for"},
+            {q: "She's been CEO ______ January.", a: "since"}
+        ]
+    },
+    pastPassive: {
+        title: "Past Passive",
+        videoId: "R9WAaD_pos",
+        theory: `<h3><i class="fas fa-lightbulb"></i> Past Passive</h3>
+            <p><strong>Ережелері:</strong></p>
+            <ol>
+                <li>Өткен уақыттағы пассивті іс-әрекеттер (The book was written)</li>
+                <li>Әрекеттің нәтижесіне назар аудару (The house was built in 1990)</li>
+            </ol>
+            <p><strong>Формула:</strong> was/were + Past Participle</p>`,
+        tasks: [
+            {q: "The book ______ (write) by Shakespeare.", a: "was written"},
+            {q: "The cars ______ (produce) in Germany.", a: "were produced"},
+            {q: "The letter ______ (send) yesterday.", a: "was sent"},
+            {q: "The house ______ (build) in 1990.", a: "was built"},
+            {q: "The decision ______ (make) last week.", a: "was made"},
+            {q: "The windows ______ (break) during the storm.", a: "were broken"},
+            {q: "The cake ______ (eat) by the children.", a: "was eaten"},
+            {q: "The report ______ (finish) on time.", a: "was finished"},
+            {q: "The tickets ______ (sell) out quickly.", a: "were sold"},
+            {q: "The message ______ (receive) at noon.", a: "was received"},
+            {q: "The rules ______ (explain) clearly.", a: "were explained"},
+            {q: "The problem ______ (solve) immediately.", a: "was solved"},
+            {q: "The paintings ______ (create) by famous artists.", a: "were created"},
+            {q: "The computer ______ (repair) yesterday.", a: "was repaired"},
+            {q: "The documents ______ (sign) by the manager.", a: "were signed"},
+            {q: "The song ______ (compose) in 1999.", a: "was composed"},
+            {q: "The bridge ______ (design) by a famous engineer.", a: "was designed"},
+            {q: "The news ______ (announce) yesterday morning.", a: "was announced"},
+            {q: "The laws ______ (change) last year.", a: "were changed"},
+            {q: "The prize ______ (award) to the best student.", a: "was awarded"},
+            {q: "The room ______ (clean) before the guests arrived.", a: "was cleaned"},
+            {q: "The story ______ (tell) many times.", a: "was told"},
+            {q: "The instructions ______ (follow) carefully.", a: "were followed"},
+            {q: "The medicine ______ (take) every four hours.", a: "was taken"},
+            {q: "The invitations ______ (send) last week.", a: "were sent"},
+            {q: "The mistake ______ (correct) immediately.", a: "was corrected"},
+            {q: "The food ______ (prepare) by a professional chef.", a: "was prepared"},
+            {q: "The questions ______ (answer) correctly.", a: "were answered"},
+            {q: "The building ______ (construct) in 2005.", a: "was constructed"},
+            {q: "The movie ______ (film) in Hollywood.", a: "was filmed"}
+        ]
+    },
+    reportedSpeech: {
+        title: "Reported Speech",
+        videoId: "_vvjInpiACc",
+        theory: `<h3><i class="fas fa-lightbulb"></i> Reported Speech</h3>
+            <p><strong>Ережелері:</strong></p>
+            <ol>
+                <li>Біреудің сөзін еріксіз жазу (She said she was happy)</li>
+                <li>Уақыт пен есімдіктерді өзгерту (I → he, today → that day)</li>
+            </ol>
+            <p><strong>Мысалдар:</strong></p>
+            <ul>
+                <li>"I am tired" → He said he was tired</li>
+                <li>"We will come" → They said they would come</li>
+            </ul>`,
+        tasks: [
+            {q: "She said: 'I am happy' → She said ______", a: "she was happy"},
+            {q: "He told me: 'We will come' → He told me ______", a: "they would come"},
+            {q: "They said: 'We have finished' → They said ______", a: "they had finished"},
+            {q: "She told me: 'I can help' → She told me ______", a: "she could help"},
+            {q: "He said: 'I saw the accident' → He said ______", a: "he had seen the accident"},
+            {q: "We told them: 'We are leaving' → We told them ______", a: "they were leaving"},
+            {q: "She said: 'I will call you' → She said ______", a: "she would call me"},
+            {q: "He told us: 'I have been waiting' → He told us ______", a: "he had been waiting"},
+            {q: "They said: 'We don't know' → They said ______", a: "they didn't know"},
+            {q: "She told me: 'I was sleeping' → She told me ______", a: "she had been sleeping"},
+            {q: "He said: 'I may be late' → He said ______", a: "he might be late"},
+            {q: "We told her: 'We have seen it' → We told her ______", a: "they had seen it"},
+            {q: "She said: 'I must go' → She said ______", a: "she had to go"},
+            {q: "He told them: 'I didn't do it' → He told them ______", a: "he hadn't done it"},
+            {q: "They said: 'We were working' → They said ______", a: "they had been working"},
+            {q: "She said: 'I love ice cream' → She said ______", a: "she loved ice cream"},
+            {q: "He told me: 'I will help you' → He told me ______", a: "he would help me"},
+            {q: "They said: 'We are coming tomorrow' → They said ______", a: "they were coming the next day"},
+            {q: "She told us: 'I can't attend the meeting' → She told us ______", a: "she couldn't attend the meeting"},
+            {q: "He said: 'I have finished my work' → He said ______", a: "he had finished my work"},
+            {q: "They told me: 'We bought a new car' → They told me ______", a: "they had bought a new car"},
+            {q: "She said: 'I was watching TV' → She said ______", a: "she had been watching TV"},
+            {q: "He told them: 'I will be there at 5' → He told them ______", a: "he would be there at 5"},
+            {q: "We said: 'We have already eaten' → We said ______", a: "they had already eaten"},
+            {q: "She told me: 'I might come later' → She told me ______", a: "she might come later"},
+            {q: "He said: 'I should study more' → He said ______", a: "he should study more"},
+            {q: "They told us: 'We were planning a surprise' → They told us ______", a: "they had been planning a surprise"},
+            {q: "She said: 'I must finish this today' → She said ______", a: "she had to finish that that day"},
+            {q: "He told me: 'I can speak French' → He told me ______", a: "he could speak French"},
+            {q: "They said: 'We will wait for you' → They said ______", a: "they would wait for me"}
+        ]
+    },
+    leaderboard: {
+        title: "Лидерлер",
+        isLeaderboard: true
+    }
+};
+
+let user = {
+    name: '',
+    scores: {},
+    progress: {}
+};
+
+let isAdmin = false;
+
+// Инициализация пользователя
+function initUser() {
+    for (const tense in grammarData) {
+        if (!grammarData[tense].isLeaderboard) {
+            user.scores[tense] = 0;
+            user.progress[tense] = [];
+        }
+    }
+}
+
+// Загрузка прогресса
+function loadProgress() {
+    const saved = localStorage.getItem('grammarUser');
+    if (saved) {
+        try {
+            user = JSON.parse(saved);
+        } catch (e) {
+            // если повреждённый JSON — переинициализируем
+            user = { name: '', scores: {}, progress: {} };
+            initUser();
+        }
+        document.getElementById('userName').value = user.name || '';
+        updateTotalScore();
+    } else {
+        initUser();
+    }
+}
+
+// Сохранение прогресса
+function saveProgress() {
+    localStorage.setItem('grammarUser', JSON.stringify(user));
+    updateLeaderboard();
+}
+
+// Сохранение имени
+function saveName() {
+    user.name = document.getElementById('userName').value.trim();
+    saveProgress();
+    alert('Атыңыз сақталды!');
+}
+
+// Создание вкладок
+function createTabs() {
+    const tabsContainer = document.getElementById('tabsContainer');
+    tabsContainer.innerHTML = '';
+    
+    Object.keys(grammarData).forEach(tense => {
+        const tab = document.createElement('div');
+        tab.className = 'tab';
+        tab.textContent = grammarData[tense].title;
+        tab.onclick = () => showContent(tense);
+        tabsContainer.appendChild(tab);
+    });
+}
+
+// Отображение контента
+function showContent(tense) {
+    const data = grammarData[tense];
+    
+    if (data.isLeaderboard) {
+        // Показываем таблицу лидеров
+        const contentHTML = `
+            <div class="leaderboard">
+                <h3><i class="fas fa-trophy"></i> Лидерлер кестесі</h3>
+                <div class="leaderboard-tabs">
+                    <div class="leaderboard-tab" onclick="showLeaderboard('all')">Барлық уақыт</div>
+                    <div class="leaderboard-tab" onclick="showLeaderboard('daily')">Күндік</div>
+                </div>
+                <div id="leaderboardContent"></div>
+                <button class="refresh-btn" onclick="updateLeaderboard()">
+                    <i class="fas fa-sync-alt"></i> Жаңарту
+                </button>
+                <div class="time-info" id="timeInfo"></div>
+            </div>
+        `;
+        document.getElementById('content').innerHTML = contentHTML;
+        showLeaderboard('all');
+    } else {
+        // Показываем обычный контент (видео, теорию, задания)
+        const contentHTML = `
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/${data.videoId}"></iframe>
+            </div>
+            <div class="theory-card">
+                ${data.theory}
+            </div>
+            <div class="tasks-grid" id="tasksGrid"></div>
+        `;
+        document.getElementById('content').innerHTML = contentHTML;
+        renderTasks(tense);
+    }
+    
+    setActiveTab(tense);
+}
+
+// Рендер заданий
+function renderTasks(tense) {
+    const tasksGrid = document.getElementById('tasksGrid');
+    if (!tasksGrid) return;
+    tasksGrid.innerHTML = grammarData[tense].tasks.map((task, index) => {
+        const isCompleted = (user.progress[tense] || []).includes(index);
+        return `
+            <div class="task-card ${isCompleted ? 'correct' : ''}">
+                <div class="task-number">Тапсырма #${index + 1}</div>
+                <div class="task-question">${task.q}</div>
+                <input type="text" 
+                       class="task-input" 
+                       id="input-${tense}-${index}"
+                       ${isCompleted ? 'disabled' : ''}>
+                <button class="check-btn" 
+                        onclick="checkAnswer('${tense}', ${index})"
+                        ${isCompleted ? 'disabled' : ''}>
+                    Тексеру
+                </button>
+            </div>
+        `;
+    }).join('');
+}
+
+// Проверка ответа
+function checkAnswer(tense, index) {
+    const input = document.getElementById(`input-${tense}-${index}`);
+    if (!input) return;
+    const correctAnswerRaw = (grammarData[tense].tasks[index].a || "").toString();
+    const correctAnswer = correctAnswerRaw.toLowerCase();
+    const userAnswer = input.value.trim().toLowerCase();
+    
+    if (userAnswer === correctAnswer) {
+        input.parentElement.classList.add('correct');
+        if (!user.progress[tense].includes(index)) {
+            user.progress[tense].push(index);
+            user.scores[tense] = (user.scores[tense] || 0) + 10;
+            saveProgress();
+            updateTotalScore();
+        }
+    } else {
+        input.parentElement.classList.add('wrong');
+    }
+    input.disabled = true;
+}
+
+// Обновление общего счета
+function updateTotalScore() {
+    const total = Object.values(user.scores || {}).reduce((sum, score) => sum + (Number(score) || 0), 0);
+    document.getElementById('totalScore').textContent = total;
+}
+
+// Установка активной вкладки
+function setActiveTab(tense) {
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.toggle('active', tab.textContent === grammarData[tense].title);
+    });
+}
+
+// Показать определенный тип таблицы лидеров
+function showLeaderboard(type) {
+    // Активируем соответствующую вкладку по типу
+    const tabs = document.querySelectorAll('.leaderboard-tab');
+    tabs.forEach(tab => tab.classList.remove('active'));
+    if (type === 'all') {
+        if (tabs[0]) tabs[0].classList.add('active');
+    } else {
+        if (tabs[1]) tabs[1].classList.add('active');
+    }
+    
+    // Получаем данные лидерборда
+    let leaderboard = [];
+    const now = new Date();
+    
+    if (type === 'all') {
+        // Для общего рейтинга
+        const allTimeData = localStorage.getItem('grammarLeaderboardAllTime');
+        if (allTimeData) {
+            try {
+                leaderboard = JSON.parse(allTimeData);
+            } catch (e) {
+                leaderboard = [];
+            }
+        }
+        
+        // Обновляем информацию о времени
+        const timeInfoEl = document.getElementById('timeInfo');
+        if (timeInfoEl) timeInfoEl.textContent = "Барлық уақыт бойынша нәтижелер";
+    } else {
+        // Для ежедневного рейтинга
+        const dailyData = localStorage.getItem('grammarLeaderboardDaily');
+        let dailyLeaders = [];
+        let dailyTimestamp = null;
+        
+        if (dailyData) {
+            try {
+                const parsedData = JSON.parse(dailyData);
+                dailyLeaders = parsedData.leaders || [];
+                dailyTimestamp = parsedData.timestamp;
+            } catch (e) {
+                dailyLeaders = [];
+                dailyTimestamp = null;
+            }
+        }
+        
+        // Проверяем, не прошло ли 12 часов
+        if (dailyTimestamp && (now - new Date(dailyTimestamp)) < 12 * 60 * 60 * 1000) {
+            leaderboard = dailyLeaders;
+            // Рассчитываем оставшееся время
+            const timeLeft = 12 * 60 * 60 * 1000 - (now - new Date(dailyTimestamp));
+            const hoursLeft = Math.floor(timeLeft / (60 * 60 * 1000));
+            const minutesLeft = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
+            const timeInfoEl = document.getElementById('timeInfo');
+            if (timeInfoEl) timeInfoEl.textContent = 
+                `Күндік рейтинг ${hoursLeft} сағат ${minutesLeft} минуттан кейін жаңартылады`;
+        } else {
+            // Если прошло 12 часов или нет данных, сбрасываем ежедневный рейтинг
+            leaderboard = [];
+            localStorage.setItem('grammarLeaderboardDaily', JSON.stringify({
+                leaders: [],
+                timestamp: now.toISOString()
+            }));
+            const timeInfoEl = document.getElementById('timeInfo');
+            if (timeInfoEl) timeInfoEl.textContent = "Күндік рейтинг жаңадан басталды";
+        }
+    }
+    
+    // Сортируем по убыванию очков
+    leaderboard.sort((a, b) => b.score - a.score);
+    
+    // Отображаем таблицу
+    const leaderboardContent = document.getElementById('leaderboardContent');
+    if (!leaderboardContent) return;
+    if (leaderboard.length > 0) {
+        let tableHTML = `
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>Орын</th>
+                        <th>Аты</th>
+                        <th>Ұпай</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        
+        leaderboard.forEach((player, index) => {
+            tableHTML += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${player.name}</td>
+                    <td>${player.score}</td>
+                </tr>
+            `;
+        });
+        
+        tableHTML += `
+                </tbody>
+            </table>
+        `;
+        
+        leaderboardContent.innerHTML = tableHTML;
+    } else {
+        leaderboardContent.innerHTML = '<p>Әлі ешкімнің нәтижесі жоқ.</p>';
+    }
+}
+
+// Обновление таблицы лидеров
+function updateLeaderboard() {
+    if (!user.name) {
+        alert('Атыңызды енгізіңіз!');
+        return;
+    }
+    
+    const totalScore = Object.values(user.scores || {}).reduce((sum, score) => sum + (Number(score) || 0), 0);
+    const now = new Date();
+    
+    // Обновляем общий рейтинг
+    let allTimeLeaders = [];
+    const allTimeData = localStorage.getItem('grammarLeaderboardAllTime');
+    if (allTimeData) {
+        try {
+            allTimeLeaders = JSON.parse(allTimeData);
+        } catch (e) {
+            allTimeLeaders = [];
+        }
+    }
+    
+    // Проверяем, есть ли уже пользователь в рейтинге
+    const userIndex = allTimeLeaders.findIndex(player => player.name === user.name);
+    if (userIndex !== -1) {
+        // Обновляем счет, если новый счет больше
+        if (totalScore > (allTimeLeaders[userIndex].score || 0)) {
+            allTimeLeaders[userIndex].score = totalScore;
+        }
+    } else {
+        // Добавляем нового пользователя
+        allTimeLeaders.push({ name: user.name, score: totalScore });
+    }
+    
+    // Сохраняем обновленный общий рейтинг
+    localStorage.setItem('grammarLeaderboardAllTime', JSON.stringify(allTimeLeaders));
+    
+    // Обновляем ежедневный рейтинг
+    let dailyData = localStorage.getItem('grammarLeaderboardDaily');
+    let dailyLeaders = [];
+    let dailyTimestamp = now.toISOString();
+    
+    if (dailyData) {
+        try {
+            const parsedData = JSON.parse(dailyData);
+            dailyLeaders = parsedData.leaders || [];
+            dailyTimestamp = parsedData.timestamp;
+            
+            // Проверяем, не прошло ли 12 часов
+            if ((now - new Date(dailyTimestamp)) >= 12 * 60 * 60 * 1000) {
+                // Если прошло 12 часов, сбрасываем рейтинг
+                dailyLeaders = [];
+                dailyTimestamp = now.toISOString();
+            }
+        } catch (e) {
+            dailyLeaders = [];
+            dailyTimestamp = now.toISOString();
+        }
+    }
+    
+    // Обновляем ежедневный рейтинг
+    const dailyUserIndex = dailyLeaders.findIndex(player => player.name === user.name);
+    if (dailyUserIndex !== -1) {
+        // Обновляем счет, если новый счет больше
+        if (totalScore > (dailyLeaders[dailyUserIndex].score || 0)) {
+            dailyLeaders[dailyUserIndex].score = totalScore;
+        }
+    } else {
+        // Добавляем нового пользователя
+        dailyLeaders.push({ name: user.name, score: totalScore });
+    }
+    
+    // Сохраняем обновленный ежедневный рейтинг
+    localStorage.setItem('grammarLeaderboardDaily', JSON.stringify({
+        leaders: dailyLeaders,
+        timestamp: dailyTimestamp
+    }));
+    
+    // Обновляем отображение
+    const activeTab = document.querySelector('.leaderboard-tab.active');
+    if (activeTab) {
+        if (activeTab.textContent === 'Барлық уақыт') {
+            showLeaderboard('all');
+        } else {
+            showLeaderboard('daily');
+        }
+    }
+    
+    alert('Рейтинг жаңартылды!');
+}
+
+// Функции для админ-панели
+function openAdminModal() {
+    document.getElementById('adminModal').style.display = 'block';
+}
+
+function closeAdminModal() {
+    document.getElementById('adminModal').style.display = 'none';
+    const pwdEl = document.getElementById('adminPassword');
+    if (pwdEl) pwdEl.value = '';
+    document.getElementById('adminLogin').style.display = 'block';
+    document.getElementById('adminPanel').style.display = 'none';
+    isAdmin = false;
+}
+
+function loginAdmin() {
+    const passwordEl = document.getElementById('adminPassword');
+    const password = passwordEl ? passwordEl.value : '';
+    if (password === 'Bombaloru3535') {
+        document.getElementById('adminLogin').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'block';
+        isAdmin = true;
+        loadAdminLeaderboard();
+        populateTenseSelect();
+        refreshStats();
+    } else {
+        alert('Қате пароль!');
+    }
+}
+
+function loadAdminLeaderboard() {
+    const allTimeData = localStorage.getItem('grammarLeaderboardAllTime');
+    let leaders = [];
+    
+    if (allTimeData) {
+        try {
+            leaders = JSON.parse(allTimeData);
+        } catch (e) {
+            leaders = [];
+        }
+    }
+    
+    let leaderboardHTML = `
+        <table class="leaderboard-table">
+            <thead>
+                <tr>
+                    <th>Орын</th>
+                    <th>Аты</th>
+                    <th>Ұпай</th>
+                    <th>Әрекет</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    leaders.sort((a, b) => b.score - a.score).forEach((player, index) => {
+        leaderboardHTML += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${player.name}</td>
+                <td>${player.score}</td>
+                <td>
+                    <button class="check-btn" onclick="openEditUser('${escapeQuotes(player.name)}')">Өңдеу</button>
+                    <button class="delete-btn" onclick="deleteUser('${escapeQuotes(player.name)}')">Өшіру</button>
+                </td>
+            </tr>
+        `;
+    });
+    
+    leaderboardHTML += `
+            </tbody>
+        </table>
+    `;
+    
+    const el = document.getElementById('adminLeaderboard');
+    if (el) el.innerHTML = leaderboardHTML;
+}
+
+// Helper to escape single quotes in strings for inline onclick
+function escapeQuotes(str) {
+    return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+}
+
+function deleteUser(username) {
+    if (!confirm(`"${username}" өшіруді растайсыз ба?`)) return;
+    
+    const allTimeData = localStorage.getItem('grammarLeaderboardAllTime');
+    if (allTimeData) {
+        try {
+            let leaders = JSON.parse(allTimeData);
+            leaders = leaders.filter(player => player.name !== username);
+            localStorage.setItem('grammarLeaderboardAllTime', JSON.stringify(leaders));
+            loadAdminLeaderboard();
+        } catch (e) {}
+    }
+    
+    const dailyData = localStorage.getItem('grammarLeaderboardDaily');
+    if (dailyData) {
+        try {
+            const parsedData = JSON.parse(dailyData);
+            let dailyLeaders = parsedData.leaders || [];
+            dailyLeaders = dailyLeaders.filter(player => player.name !== username);
+            localStorage.setItem('grammarLeaderboardDaily', JSON.stringify({
+                leaders: dailyLeaders,
+                timestamp: parsedData.timestamp
+            }));
+        } catch (e) {}
+    }
+
+    // If the currently loaded user (grammarUser) has this name, reset them
+    const savedUser = localStorage.getItem('grammarUser');
+    if (savedUser) {
+        try {
+            const parsedUser = JSON.parse(savedUser);
+            if (parsedUser.name === username) {
+                localStorage.removeItem('grammarUser');
+                user = { name: '', scores: {}, progress: {} };
+                initUser();
+                loadProgress();
+            }
+        } catch (e) {}
+    }
+}
+
+function populateTenseSelect() {
+    const select = document.getElementById('tenseSelect');
+    if (!select) return;
+    select.innerHTML = '<option value="">Тақырыпты таңдаңыз</option>';
+    
+    for (const tense in grammarData) {
+        if (!grammarData[tense].isLeaderboard) {
+            select.innerHTML += `<option value="${tense}">${grammarData[tense].title}</option>`;
+        }
+    }
+}
+
+function showAnswers() {
+    const tense = document.getElementById('tenseSelect').value;
+    if (!tense) return;
+    
+    const tasks = grammarData[tense].tasks || [];
+    let answersHTML = '';
+    
+    tasks.forEach((task, index) => {
+        answersHTML += `
+            <div class="answer-item">
+                <strong>${index + 1}. ${task.q}</strong>
+                <div class="correct-answer">${task.a}</div>
+            </div>
+        `;
+    });
+    
+    const el = document.getElementById('correctAnswers');
+    if (el) el.innerHTML = answersHTML;
+}
+
+function clearAllData() {
+    if (!confirm('Барлық деректерді өшіруді растайсыз ба? Бұл әрекетті болдырмау мүмкін емес!')) return;
+    
+    localStorage.clear();
+    alert('Барлық деректер өшірілді!');
+    location.reload();
+}
+
+function clearLeaderboard() {
+    if (!confirm('Лидерлер кестесін тазалауды растайсыз ба?')) return;
+    
+    localStorage.removeItem('grammarLeaderboardAllTime');
+    localStorage.removeItem('grammarLeaderboardDaily');
+    alert('Лидерлер кестесі тазаланды!');
+    loadAdminLeaderboard();
+}
+
+// ----------------- Новые функции админа -----------------
+
+// Экспорт лидерборда в CSV
+function exportLeaderboardCSV() {
+    const data = localStorage.getItem('grammarLeaderboardAllTime');
+    let leaders = [];
+    if (data) {
+        try { leaders = JSON.parse(data); } catch (e) { leaders = []; }
+    }
+    if (!leaders.length) {
+        alert('Лидерборд пуст.');
+        return;
+    }
+    const header = ['name', 'score'];
+    const rows = leaders.map(p => [escapeCsv(p.name), p.score]);
+    const csvContent = [header.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'leaderboard_alltime.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function escapeCsv(val) {
+    if (typeof val !== 'string') return val;
+    if (val.includes(',') || val.includes('"') || val.includes('\n')) {
+        return '"' + val.replace(/"/g, '""') + '"';
+    }
+    return val;
+}
+
+// Сохранение всех данных в JSON-файл
+function downloadAllData() {
+    const payload = {
+        grammarUser: safeParse(localStorage.getItem('grammarUser')),
+        grammarLeaderboardAllTime: safeParse(localStorage.getItem('grammarLeaderboardAllTime')),
+        grammarLeaderboardDaily: safeParse(localStorage.getItem('grammarLeaderboardDaily'))
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'grammar_data_backup.json';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function safeParse(str) {
+    if (!str) return null;
+    try { return JSON.parse(str); } catch (e) { return str; }
+}
+
+// Импорт лидеров из JSON массива
+function importLeaderboardJSON() {
+    const raw = document.getElementById('importTextarea').value.trim();
+    if (!raw) {
+        alert('Ештеңе енгізілмеді.');
+        return;
+    }
+    try {
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) {
+            alert('JSON массив болуы керек.');
+            return;
+        }
+        // валидация: каждый элемент должен иметь name и score
+        for (const item of parsed) {
+            if (typeof item.name !== 'string' || typeof item.score !== 'number') {
+                alert('Әр элементте "name" (string) және "score" (number) болуы керек.');
+                return;
+            }
+        }
+        // сохраняем как общий лидерборд (перезапишем)
+        localStorage.setItem('grammarLeaderboardAllTime', JSON.stringify(parsed));
+        alert('Импорт успешно выполнен.');
+        loadAdminLeaderboard();
+    } catch (e) {
+        alert('Неправильный JSON: ' + e.message);
+    }
+}
+
+// Поиск игрока по имени (точное или частичное совпадение)
+function findUser() {
+    const q = document.getElementById('searchUserInput').value.trim().toLowerCase();
+    const resultEl = document.getElementById('searchResult');
+    resultEl.innerHTML = '';
+    if (!q) {
+        resultEl.innerHTML = '<p>Аты енгізіңіз.</p>';
+        return;
+    }
+    const allTime = safeParse(localStorage.getItem('grammarLeaderboardAllTime')) || [];
+    const daily = (safeParse(localStorage.getItem('grammarLeaderboardDaily')) || { leaders: [] }).leaders || [];
+    const combinedNames = new Set();
+    allTime.forEach(p => combinedNames.add(p.name));
+    daily.forEach(p => combinedNames.add(p.name));
+    const matches = Array.from(combinedNames).filter(n => n.toLowerCase().includes(q));
+    if (!matches.length) {
+        resultEl.innerHTML = '<p>Ойыншы табылмады.</p>';
+        return;
+    }
+    // покажем список совпадений с возможностью редактировать
+    let html = '';
+    matches.forEach(name => {
+        const a = (allTime.find(p => p.name === name) || { score: 0 }).score;
+        const d = (daily.find(p => p.name === name) || { score: 0 }).score;
+        html += `
+            <div class="user-search-result">
+                <div><strong>${name}</strong></div>
+                <div>All-time: ${a} — Daily: ${d}</div>
+                <div style="margin-top:8px;" class="compact">
+                    <input type="number" id="setScore_${escapeQuotes(name)}" class="small-input" placeholder="Жаңа ұпай">
+                    <button class="check-btn" onclick="setUserScore('${escapeQuotes(name)}')">Қою</button>
+                    <button class="delete-btn" onclick="resetUserProgressConfirm('${escapeQuotes(name)}')">Прогресс өшіру</button>
+                    <button class="check-btn" onclick="showUserDetails('${escapeQuotes(name)}')">Толығырақ</button>
+                </div>
+                <div id="userDetails_${escapeQuotes(name)}"></div>
+            </div>
+        `;
+    });
+    resultEl.innerHTML = html;
+}
+
+// Установить/изменить очки пользователя (в обоих лидербордах)
+function setUserScore(name) {
+    const inputId = `setScore_${name}`;
+    const el = document.getElementById(inputId);
+    if (!el) return alert('Кірісті енгізіңіз');
+    const newScore = Number(el.value);
+    if (isNaN(newScore)) return alert('Сандарды енгізіңіз');
+    // общий
+    let all = safeParse(localStorage.getItem('grammarLeaderboardAllTime')) || [];
+    const idx = all.findIndex(p => p.name === name);
+    if (idx !== -1) {
+        all[idx].score = newScore;
+    } else {
+        all.push({ name: name, score: newScore });
+    }
+    localStorage.setItem('grammarLeaderboardAllTime', JSON.stringify(all));
+    // ежедневный
+    const dailyRaw = safeParse(localStorage.getItem('grammarLeaderboardDaily')) || { leaders: [], timestamp: new Date().toISOString() };
+    let dailyLeaders = dailyRaw.leaders || [];
+    const dIdx = dailyLeaders.findIndex(p => p.name === name);
+    if (dIdx !== -1) {
+        dailyLeaders[dIdx].score = newScore;
+    } else {
+        dailyLeaders.push({ name: name, score: newScore });
+    }
+    localStorage.setItem('grammarLeaderboardDaily', JSON.stringify({ leaders: dailyLeaders, timestamp: dailyRaw.timestamp || new Date().toISOString() }));
+    alert(`Ұпай жаңартылды: ${name} -> ${newScore}`);
+    loadAdminLeaderboard();
+    refreshStats();
+}
+
+// Подтверждение сброса прогресса игрока
+function resetUserProgressConfirm(name) {
+    if (!confirm(`"${name}" прогресін толық өшіру керек пе? (Leaderboard-тен де өшіріледі)`)) return;
+    resetUserProgress(name);
+}
+
+// Сброс прогресса (удаляет из лидербордов и очищает локального пользователя если имя совпадает)
+function resetUserProgress(name) {
+    // удалить из all-time
+    let all = safeParse(localStorage.getItem('grammarLeaderboardAllTime')) || [];
+    all = all.filter(p => p.name !== name);
+    localStorage.setItem('grammarLeaderboardAllTime', JSON.stringify(all));
+    // удалить из daily
+    let dailyRaw = safeParse(localStorage.getItem('grammarLeaderboardDaily')) || { leaders: [], timestamp: new Date().toISOString() };
+    let daily = dailyRaw.leaders || [];
+    daily = daily.filter(p => p.name !== name);
+    localStorage.setItem('grammarLeaderboardDaily', JSON.stringify({ leaders: daily, timestamp: dailyRaw.timestamp || new Date().toISOString() }));
+    // если текущий пользователь — этот, сбросим ему прогресс
+    const saved = safeParse(localStorage.getItem('grammarUser'));
+    if (saved && saved.name === name) {
+        localStorage.removeItem('grammarUser');
+        user = { name: '', scores: {}, progress: {} };
+        initUser();
+        loadProgress();
+    }
+    alert(`${name} прогресі тазаланды.`);
+    loadAdminLeaderboard();
+    refreshStats();
+}
+
+// Показать детали пользователя (если есть)
+function showUserDetails(name) {
+    const el = document.getElementById(`userDetails_${name}`);
+    if (!el) return;
+    const saved = safeParse(localStorage.getItem('grammarUser'));
+    let html = '';
+    if (saved && saved.name === name) {
+        html += `<div>Бұл — ағымдағы локалдық пайдаланушы. Прогресс: <pre>${JSON.stringify(saved.progress || {}, null, 2)}</pre></div>`;
+    } else {
+        html += `<div>Локалдық пайдаланушы — бұл атымен табылмады немесе басқа құрылғыда сақталған болуы мүмкін.</div>`;
+    }
+    el.innerHTML = html;
+}
+
+// Открыть небольшой модал/фокус на импорт (для удобства)
+function openImportModal() {
+    const importArea = document.getElementById('importTextarea');
+    if (importArea) {
+        importArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        importArea.focus();
+    }
+}
+
+// Обновление статистики админа
+function refreshStats() {
+    const all = safeParse(localStorage.getItem('grammarLeaderboardAllTime')) || [];
+    const usersCount = all.length;
+    const topScore = usersCount ? Math.max(...all.map(p => Number(p.score) || 0)) : 0;
+    const avg = usersCount ? Math.round(all.reduce((s, p) => s + (Number(p.score) || 0), 0) / usersCount) : 0;
+    const elUsers = document.getElementById('statUsers');
+    const elTop = document.getElementById('statTopScore');
+    const elAvg = document.getElementById('statAvgScore');
+    if (elUsers) elUsers.textContent = usersCount;
+    if (elTop) elTop.textContent = topScore;
+    if (elAvg) elAvg.textContent = avg;
+}
+
+// ----------------- Конец новых функций -----------------
+
+// Запуск приложения
+document.addEventListener('DOMContentLoaded', () => {
+    loadProgress();
+    createTabs();
+    showContent('presentSimple');
+    
+    // Обработчики для модального окна админа
+    const adminBtn = document.getElementById('adminButton');
+    if (adminBtn) adminBtn.addEventListener('click', openAdminModal);
+    const closeBtn = document.querySelector('.close');
+    if (closeBtn) closeBtn.addEventListener('click', closeAdminModal);
+    window.addEventListener('click', function(event) {
+        if (event.target == document.getElementById('adminModal')) {
+            closeAdminModal();
+        }
+    });
+});
+</script>
+</body>
+</html>
